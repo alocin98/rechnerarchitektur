@@ -1,12 +1,12 @@
 /* TODO: Task (b) Please fill in the following lines, then remove this line.
  *
- * author(s):   FIRSTNAME LASTNAME 
+ * author(s):   FIRSTNAME LASTNAME
  *              (FIRSTNAME2 LASTNAME2)
  *
- * Please follow the instructions given in comments below. 
- * The file outputc1 shows what the output of this program 
- * should look like. 
- *
+ * Please follow the instructions given in comments below.
+ * The file outputc1 shows what the output of this program
+ * should look like.
+ *test
  */
 
 #include <stdlib.h>
@@ -193,7 +193,7 @@ void initialize() {
 
 
 void printInstruction(Instruction *i) {
-/* TODO Task (h) complete printInstruction here */    
+/* TODO Task (h) complete printInstruction here */
 }
 
 void testPrint(word w) {
@@ -214,9 +214,3 @@ int main(int argc, const char * argv[]) {
     testPrint(create_specialtype_hex(OC_STOP));
     return 0;
 }
-
-
-
-
-
-
