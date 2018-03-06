@@ -1,7 +1,7 @@
-/* TODO: Task (b) Please fill in the following lines, then remove this line.
+/*
  *
- * author(s):   FIRSTNAME LASTNAME
- *              (FIRSTNAME2 LASTNAME2)
+ * author(s):   Cedric Aebi 17-103-235
+ *              (Nicolas Müller 17-122-094)
  *
  * Please follow the instructions given in comments below.
  * The file outputc1 shows what the output of this program
@@ -115,6 +115,12 @@ typedef unsigned short halfword;
 typedef unsigned char byte;
 
 /* TODO Task (c) add bitfields InstructionTypeI, InstructionTypeJ and InstructionTypeR here */
+typedef struct InstructionTypeI {
+  unsigned immediate:15;
+  unsigned rt:4;
+  unsigned rs:4;
+  unsigned opcode:5;
+};
 
 /* TODO Task (d) add union Instruction here */
 
