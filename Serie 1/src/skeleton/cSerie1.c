@@ -116,19 +116,50 @@ typedef unsigned char byte;
 
 /* TODO Task (c) add bitfields InstructionTypeI, InstructionTypeJ and InstructionTypeR here */
 typedef struct InstructionTypeI {
-  unsigned immediate:15;
-  unsigned rt:4;
-  unsigned rs:4;
-  unsigned opcode:5;
-};
+  unsigned immediate:16;
+  unsigned rt:5;
+  unsigned rs:5;
+  unsigned opcode:6;
+}InstructionTypeI;
+
+typedef struct InstructionTypeJ {
+    unsigned address:26;
+    unsigned opcode:6;
+}InstructionTypeJ;
+
+typedef struct InstructionTypeR {
+    unsigned funct:6;
+    unsigned shamt:5;
+    unsigned rd:5;
+    unsigned rt:5;
+    unsigned rs:5;
+    unsigned opcode:6;
+}InstructionTypeR;
 
 /* TODO Task (d) add union Instruction here */
+typedef union Instruction {
+    InstructionTypeI i;
+    InstructionTypeJ j;
+    InstructionTypeR r;
+}Instruction;
 
 /* TODO Task (e) add enumeration InstructionType here */
+typedef enum InstructionType {
+    iType, jType, rType, specialType
+}InstructionType;
 
 /* TODO Task (f) add structure Operation here */
+typedef struct Operation {
+    char name[OP_NAME_LENGTH + 1];
+    InstructionType type;
+    void (*operation)(Instruction *p);
+}Operation;
 
 /* TODO Task (g) add structure Function here */
+typedef struct Function {
+    char name[FUNC_NAME_LENGTH + 1];
+    void (*function)(Instruction *p);
+}Function;
 
 /* Operation and function dispatcher */
 Operation operations[OPERATION_COUNT];
@@ -200,6 +231,24 @@ void initialize() {
 
 void printInstruction(Instruction *i) {
 /* TODO Task (h) complete printInstruction here */
+    Operation o = operations[i->i.opcode];
+    Function u = functions[i->i.opcode];
+    
+    switch (o.type){
+            
+        case iType:
+            printf("%-4s %02i, %02i, 0x%04x\n", o.name, i->i.rt, i->i.rs, i->i.immediate);
+            break;
+        case jType:
+            printf("%-4s 0x%08x\n", o.name, i->j.address);
+            break;
+        case rType:
+            printf("%-4s %02i, %02i, %02i, 0x%04x\n", u.name, i->r.rd, i->r.rs, i->r.rt, i->r.shamt);
+            break;
+        case specialType:
+            printf("%-4s\n", o.name);
+            break;
+    }
 }
 
 void testPrint(word w) {
