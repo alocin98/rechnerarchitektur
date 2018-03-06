@@ -141,7 +141,7 @@ typedef union Instruction {
     InstructionTypeI i;
     InstructionTypeJ j;
     InstructionTypeR r;
-}Instrucion;
+}Instruction;
 
 /* TODO Task (e) add enumeration InstructionType here */
 typedef enum InstructionType {
@@ -149,9 +149,14 @@ typedef enum InstructionType {
 }InstructionType;
 
 /* TODO Task (f) add structure Operation here */
-
+typedef struct Operation {
+    char name[OP_NAME_LENGTH + 1];
+    InstructionType type;
+    void (*operation)(Instruction *);
+}Operation;
 
 /* TODO Task (g) add structure Function here */
+
 
 /* Operation and function dispatcher */
 Operation operations[OPERATION_COUNT];
