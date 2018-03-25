@@ -1,7 +1,7 @@
-/* TODO: Task (b) Please fill in the following lines, then remove this line.
+/*
  *
- * author(s):   FIRSTNAME LASTNAME 
- *              (FIRSTNAME2 LASTNAME2)
+ * author(s):   Cedric Aebi
+ *              (Nicolas Müller)
  * modified:    2010-01-07
  *
  */
@@ -103,17 +103,38 @@ void test_lui() {
 
 /* LW */
 void test_lw() {
-    /* TODO: Task (d) add test for LW here */
+	word location = 0x000000FF;
+
+	word save = 0xDEADBEEF;
+	storeWord(save, location);
+	T1 = location;
+
+	test_execute(create_itype_hex(0x0000, I_T0, I_T1, OC_LW));
+	assert(T0 == save);
 } 
 
 /* ORI */
 void test_ori() {
-    /* TODO: Task (d) add test for ORI here */
+	T0 = 0x0000A0A0;
+	test_execute(create_itype_hex(0x0A0A, I_T2, I_T0, OC_ORI));
+	assert(T2 == 0x0000AAAA);
+
+	T0 = 0x0000F0F0;
+	test_execute(create_itype_hex(0x0000, I_T2, I_T0, OC_ORI));
+	assert(T2 == 0x0000F0F0);
 }
 
 /* SUB */
 void test_sub() {
-    /* TODO: Task (d) add test for SUB here */
+	T1 = 5;
+	T2 = 3;
+	test_execute(create_rtype_hex(FC_SUB, 0x0000, I_T0, I_T1, I_T2, OC_SUB));
+	assert(T0 == -2);
+
+	T1 = 3;
+	T2 = 6;
+	test_execute(create_rtype_hex(FC_SUB, 0x0000, I_T0, I_T1, I_T2, OC_SUB));
+	assert(T0 == 3);
 }
 
 /* SW */
