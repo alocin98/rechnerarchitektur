@@ -11,9 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d24c8fe2-8fc8-491d-83e1-929d795b051c" name="Default" comment="Final version">
-      <change beforePath="$PROJECT_DIR$/skeleton/test.c" afterPath="$PROJECT_DIR$/skeleton/test.c" />
-    </list>
+    <list default="true" id="d24c8fe2-8fc8-491d-83e1-929d795b051c" name="Default" comment="Final version" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -63,7 +61,7 @@
         <entry file="file://$PROJECT_DIR$/skeleton/test.c">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="373">
-              <caret line="135" column="22" lean-forward="true" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
+              <caret line="135" column="22" lean-forward="false" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
               <folding>
                 <element signature="e#102#121#0" expanded="true" />
               </folding>
@@ -167,7 +165,7 @@
       <option name="presentableId" value="Default" />
       <updated>1521886396281</updated>
       <workItem from="1521886397513" duration="8971000" />
-      <workItem from="1522056048853" duration="3674000" />
+      <workItem from="1522056048853" duration="3769000" />
     </task>
     <task id="LOCAL-00001" summary="jhjhg">
       <created>1521886631013</created>
@@ -187,7 +185,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12645000" />
+    <option name="totallyTimeSpent" value="12740000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -363,7 +361,7 @@
     <entry file="file://$PROJECT_DIR$/skeleton/test.c">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="373">
-          <caret line="135" column="22" lean-forward="true" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
+          <caret line="135" column="22" lean-forward="false" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
           <folding>
             <element signature="e#102#121#0" expanded="true" />
           </folding>
