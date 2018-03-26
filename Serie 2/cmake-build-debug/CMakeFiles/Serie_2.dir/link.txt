@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/Serie_2.dir/skeleton/main.c.o CMakeFiles/Serie_2.dir/skeleton/mips.c.o CMakeFiles/Serie_2.dir/skeleton/test.c.o  -o Serie_2 

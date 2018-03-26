@@ -105,36 +105,36 @@ void test_lui() {
 void test_lw() {
 	word location = 0x000000FF;
 
-	word save = 0xDEADBEEF;
-	storeWord(save, location);
+	word w = 0xFACFAC69;
+	storeWord(w, location);
 	T1 = location;
 
 	test_execute(create_itype_hex(0x0000, I_T0, I_T1, OC_LW));
-	assert(T0 == save);
+	assert(T0 == w);
 } 
 
 /* ORI */
 void test_ori() {
-	T0 = 0x0000A0A0;
-	test_execute(create_itype_hex(0x0A0A, I_T2, I_T0, OC_ORI));
-	assert(T2 == 0x0000AAAA);
-
 	T0 = 0x0000F0F0;
+	test_execute(create_itype_hex(0x0F0F, I_T2, I_T0, OC_ORI));
+	assert(T2 == 0x0000FFFF);
+
+	T0 = 0x0000B0B0;
 	test_execute(create_itype_hex(0x0000, I_T2, I_T0, OC_ORI));
-	assert(T2 == 0x0000F0F0);
+	assert(T2 == 0x0000B0B0);
 }
 
 /* SUB */
 void test_sub() {
-	T1 = 5;
-	T2 = 3;
+	T1 = 10;
+	T2 = 4;
 	test_execute(create_rtype_hex(FC_SUB, 0x0000, I_T0, I_T1, I_T2, OC_SUB));
-	assert(T0 == -2);
+	assert(T0 == -6);
 
-	T1 = 3;
-	T2 = 6;
+	T1 = 10;
+	T2 = 20;
 	test_execute(create_rtype_hex(FC_SUB, 0x0000, I_T0, I_T1, I_T2, OC_SUB));
-	assert(T0 == 3);
+	assert(T0 == 10);
 }
 
 /* SW */
