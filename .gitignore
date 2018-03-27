@@ -1,0 +1,29 @@
+# Java compiled code
+*.class
+*.war
+*.ear
+
+# eclipse and setting files
+*/bin
+*.launch
+.settings/
+.metadata/
+*/out/production
+
+/**/RemoteSystemsTempFiles
+
+# Hidden files
+!.gitignore
+!.classpath
+!.project
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# OS specifc files
+Thumbs.db
+Desktrop.ini
+.DS_Store
+.directory
