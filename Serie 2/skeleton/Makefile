@@ -1,5 +1,5 @@
 CC      = gcc
-CFLAGS  = -ansi -pedantic -Wall
+CFLAGS  = -std=c99 -pedantic -Wall
 
 OBJ = mips.o 
 
