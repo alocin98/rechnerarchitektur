@@ -3,8 +3,9 @@
 *.war
 *.ear
 
-# eclipse and setting files
+# eclipse/CLion and setting files
 */bin
+*/cmake-build-debug
 *.launch
 .settings/
 .metadata/
@@ -16,6 +17,7 @@
 !.gitignore
 !.classpath
 !.project
+!.idea
 
 # Temporary files
 *.tmp
