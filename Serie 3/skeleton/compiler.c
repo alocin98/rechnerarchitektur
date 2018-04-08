@@ -218,9 +218,7 @@ void compiler(char* exp, char *filename) {
     currentToken=tokens;
     expression();
     store(create_jtype_hex(0x000000,OC_STOP));
-    if (verbose) {
-        printf("%s\n", postfix);
-    }
+    printf("%s\n", postfix);
     freeTokens();
     fclose(file);
     free(postfix);

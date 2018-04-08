@@ -1,7 +1,7 @@
-/* TODO: Task (b) Please fill in the following lines, then remove this line.
+/*
  *
- * author(s):   FIRSTNAME LASTNAME 
- *              (FIRSTNAME2 LASTNAME2)
+ * author(s):   Cedric Aebi
+ *              (Nicolas Mueller)
  * modified:    2010-01-07
  *
  */
@@ -32,7 +32,13 @@ Function functions[FUNCTION_COUNT];
 /* Some useful helpers */
 
 void error(const char *functionName, const char *fileName, int lineNumber, char *message, ...) {
-   /* TODO: Task (e) implement error */
+    printf("%s in %s, line %i: ", functionName, fileName, lineNumber);
+    va_list ap;
+    va_start(ap, message);
+    vprintf(message, ap);
+    va_end(ap);
+    printf("\n");
+    exit(EXIT_FAILURE);
 }
 
 
