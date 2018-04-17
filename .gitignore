@@ -1,0 +1,31 @@
+# Java compiled code
+*.class
+*.war
+*.ear
+
+# eclipse/CLion and setting files
+*/bin
+*/cmake-build-debug
+*.launch
+.settings/
+.metadata/
+*/out/production
+
+/**/RemoteSystemsTempFiles
+
+# Hidden files
+!.gitignore
+!.classpath
+!.project
+!.idea
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# OS specifc files
+Thumbs.db
+Desktrop.ini
+.DS_Store
+.directory

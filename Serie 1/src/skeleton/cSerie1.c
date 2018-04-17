@@ -115,19 +115,19 @@ typedef unsigned short halfword;
 typedef unsigned char byte;
 
 /* TODO Task (c) add bitfields InstructionTypeI, InstructionTypeJ and InstructionTypeR here */
-typedef struct InstructionTypeI {
+typedef struct {
   unsigned immediate:16;
   unsigned rt:5;
   unsigned rs:5;
   unsigned opcode:6;
 }InstructionTypeI;
 
-typedef struct InstructionTypeJ {
+typedef struct {
     unsigned address:26;
     unsigned opcode:6;
 }InstructionTypeJ;
 
-typedef struct InstructionTypeR {
+typedef struct {
     unsigned funct:6;
     unsigned shamt:5;
     unsigned rd:5;
