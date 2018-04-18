@@ -233,9 +233,9 @@ void printInstruction(Instruction *i) {
 /* TODO Task (h) complete printInstruction here */
     Operation o = operations[i->i.opcode];
     Function u = functions[i->i.opcode];
-    
+
     switch (o.type){
-            
+
         case iType:
             printf("%-4s %02i, %02i, 0x%04x\n", o.name, i->i.rt, i->i.rs, i->i.immediate);
             break;
