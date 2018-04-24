@@ -37,16 +37,16 @@ configurePins:
 	BL	pinMode
 
 	// Set the latch pin to 'output' mode
-	/* to be implemented by student */
-
+	LDR R0, .LATCH_PIN
+  LDR R1, .OUTPUT
+  BL  pinLatch
 
 	// Set the clock pin to 'output' mode
-	/* to be implemented by student */
+	LDR R0, .CLOCK_PIN
+  LDR R1, .OUTPUT
+  BL  pinClock
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
-	/* to be implemented by student */
-
-
 	LDR	R0, .BUTTON1_PIN
 	LDR	R1, .PUD_UP
 	BL	pullUpDnControl
@@ -67,6 +67,8 @@ start:
 	- and/or other (temporary) registers as you wish.
 	*/
 
+  //Register to hold the state of the LED bar
+
 
 knightRiderLoop:
 	/*
@@ -81,14 +83,17 @@ knightRiderLoop:
 
 
 	// Set latch pin low (read serial data)
-	/* to be implemented by student */
+	LDR R0, .pinLatch
+  LDR R1, .LOW
+  BL digitalWrite
 
 	// Send serial data (shiftOut)
-	/* to be implemented by student */
+	shiftOut(.pinMode, .pinClock, .LOW, data)
 
 	// Set latch pin high (write serial data to parallel output)
-	/* to be implemented by student */
-
+	LDR R0, .pinLatch
+  LDR R1, .HIGH
+  BL digitalWrite
 
 
 	// Detect button presses and increase/decrease the delay
@@ -97,7 +102,7 @@ knightRiderLoop:
 
 
 	/* Other logic goes here, like updating variables, branching to the loop label, etc. */
-	/* to be implemented by student */
+	B knightRiderLoop
 
 
 
