@@ -39,12 +39,12 @@ configurePins:
 	// Set the latch pin to 'output' mode
 	LDR R0, .LATCH_PIN
   LDR R1, .OUTPUT
-  BL  pinLatch
+  BL  pinMode
 
 	// Set the clock pin to 'output' mode
 	LDR R0, .CLOCK_PIN
   LDR R1, .OUTPUT
-  BL  pinClock
+  BL  pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
 	LDR	R0, .BUTTON1_PIN
