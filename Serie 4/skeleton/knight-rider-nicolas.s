@@ -70,6 +70,7 @@ start:
   //Register to hold the state of the LED bar
 
 
+
 knightRiderLoop:
 	/*
 	Implement this loop to make the light move.
@@ -88,7 +89,6 @@ knightRiderLoop:
   BL digitalWrite
 
 	// Send serial data (shiftOut)
-	shiftOut(.pinMode, .pinClock, .LOW, data)
 
 	// Set latch pin high (write serial data to parallel output)
 	LDR R0, .pinLatch
