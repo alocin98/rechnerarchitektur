@@ -37,14 +37,23 @@ configurePins:
 	BL	pinMode
 
 	// Set the latch pin to 'output' mode
-	/* to be implemented by student */
-
+	LDR R0, .LATCH_PIN
+  	LDR R1, .OUTPUT
+  	BL  pinMode
 
 	// Set the clock pin to 'output' mode
-	/* to be implemented by student */
+	LDR R0, .CLOCK_PIN
+  	LDR R1, .OUTPUT
+  	BL  pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
-	/* to be implemented by student */
+	LDR	R0, .BUTTON1_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
+
+	LDR	R0, .BUTTON2_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
 
 
 	LDR	R0, .BUTTON1_PIN
@@ -66,6 +75,18 @@ start:
 	- a register for a counter variable
 	- and/or other (temporary) registers as you wish.
 	*/
+	
+	//Initialize a Register to hold the state of the LED bar
+	//State of LED bar
+	MOV	R5, #1
+	//Direction in which the LED goes
+	MOV	R9, #0
+	//Time delay
+	MOV	R10, #50
+	//State of the two buttons
+	MOV	R7,  #0
+	MOV	R8,  #0
+	BL	knightRiderLoop
 
 
 knightRiderLoop:
@@ -79,25 +100,77 @@ knightRiderLoop:
 	3. Set the latch pin to high
 	*/
 
-
 	// Set latch pin low (read serial data)
-	/* to be implemented by student */
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .LOW
+	BL	digitalWrite
 
 	// Send serial data (shiftOut)
-	/* to be implemented by student */
+	LDR	R0, .DATA_PIN
+	LDR	R1, .CLOCK_PIN
+	LDR	R2, .LSBFIRST
+	MOV	R3, R5
+	BL	shiftOut
 
 	// Set latch pin high (write serial data to parallel output)
-	/* to be implemented by student */
-
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .HIGH
+	BL	digitalWrite
 
 
 	// Detect button presses and increase/decrease the delay
 	// Use the 'waitForButton' subroutine for each button
 	/* to be implemented by student */
+	
+	//Check if button pressed Left
+	LDR	R0, .BUTTON2_PIN
+	MOV	R1, R10
+	MOV	R2, R8
+	BL	waitForButton
+	
+	MOV	R8, R1
 
+	CMP	R0, #1
+	MOVEQ	R10,#50	
+
+	//Check if button pressed Right
+	LDR	R0, .BUTTON1_PIN
+	MOV	R1, R10
+	MOV	R2, R7
+	BL	waitForButton
+	
+	MOV	R7, R1
+
+	CMP	R0, #1
+	SUBEQ	R10,#1
 
 	/* Other logic goes here, like updating variables, branching to the loop label, etc. */
-	/* to be implemented by student */
+
+
+	/* Let the LED run */
+	//Do a left shift
+	CMP	R9, #0
+	LSLEQ	R5, R5, #1
+
+	//Do a right shift
+	CMP	R9, #1
+	LSREQ	R5, R5, #1
+
+	//Change direction to right
+	CMP	R5, #128
+	MOVEQ	R9, #1
+
+	//Change direction to left
+	CMP	R5, #1
+	MOVEQ	R9, #0
+	
+	//Custom delay
+	//MOV	R0, R10
+	//BL 	delay
+	
+	
+	//Jump to Loop
+	B knightRiderLoop
 
 
 
@@ -120,7 +193,6 @@ foo:
 	// ... do something here with registers R3 and R4 ...
 	LDMIA SP!, {R3, R4, PC} // end of foo subroutine, restore registers and jump
 
-
 */
 
 waitForButton:
@@ -133,7 +205,7 @@ waitForButton:
 
 	 Output:
 	 R0:	1 if button pressed (falling edge), 0 otherwise
-	 R1:	state of button (High/Low)
+	 R1:	state of button 1 if button pressed (falling edge), 0 otherwise(High/Low)
 	-----------------------------------------------------------------
 	*/
 	STMDB SP!, {R2-R10, LR}
@@ -175,7 +247,6 @@ waitForButton:
 
 
 
-
 // Constants for high- and low signals on the pins
 .HIGH:			.word	1
 .LOW:			.word	0
@@ -200,3 +271,5 @@ waitForButton:
 // Button pins
 .BUTTON1_PIN:		.word	18
 .BUTTON2_PIN:		.word	25
+
+//Custom definitions
