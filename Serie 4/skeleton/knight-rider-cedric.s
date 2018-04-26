@@ -37,14 +37,23 @@ configurePins:
 	BL	pinMode
 
 	// Set the latch pin to 'output' mode
-	/* to be implemented by student */
-
+	LDR R0, .LATCH_PIN
+  	LDR R1, .OUTPUT
+  	BL  pinMode
 
 	// Set the clock pin to 'output' mode
-	/* to be implemented by student */
+	LDR R0, .CLOCK_PIN
+  	LDR R1, .OUTPUT
+  	BL  pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
-	/* to be implemented by student */
+	LDR	R0, .BUTTON1_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
+
+	LDR	R0, .BUTTON2_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
 
 
 	LDR	R0, .BUTTON1_PIN
@@ -66,6 +75,9 @@ start:
 	- a register for a counter variable
 	- and/or other (temporary) registers as you wish.
 	*/
+	
+	//Initialize a Register to hold the state of the LED bar
+	BL	knightRiderLoop
 
 
 knightRiderLoop:
@@ -81,14 +93,23 @@ knightRiderLoop:
 
 
 	// Set latch pin low (read serial data)
-	/* to be implemented by student */
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .LOW
+	BL	digitalWrite
 
 	// Send serial data (shiftOut)
-	/* to be implemented by student */
+	LDR	R0, .DATA_PIN
+	LDR	R1, .CLOCK_PIN
+	LDR	R3, .LSBFIRST
+	LDR	R4, .PENIS
+	BL	shiftOut
 
 	// Set latch pin high (write serial data to parallel output)
-	/* to be implemented by student */
-
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .HIGH
+	BL	digitalWrite
+	MOV	R0, #1000
+	BL	delay
 
 
 	// Detect button presses and increase/decrease the delay
@@ -200,3 +221,6 @@ waitForButton:
 // Button pins
 .BUTTON1_PIN:		.word	18
 .BUTTON2_PIN:		.word	25
+
+//Custom definitions
+.PENIS:			.word 	32
