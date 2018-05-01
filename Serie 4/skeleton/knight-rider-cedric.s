@@ -38,13 +38,13 @@ configurePins:
 
 	// Set the latch pin to 'output' mode
 	LDR R0, .LATCH_PIN
-  	LDR R1, .OUTPUT
-  	BL  pinMode
+  LDR R1, .OUTPUT
+  BL  pinMode
 
 	// Set the clock pin to 'output' mode
 	LDR R0, .CLOCK_PIN
-  	LDR R1, .OUTPUT
-  	BL  pinMode
+  LDR R1, .OUTPUT
+  BL  pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
 	LDR	R0, .BUTTON1_PIN
@@ -54,7 +54,6 @@ configurePins:
 	LDR	R0, .BUTTON2_PIN
 	LDR	R1, .INPUT
 	BL	pinMode
-
 
 	LDR	R0, .BUTTON1_PIN
 	LDR	R1, .PUD_UP
@@ -75,7 +74,7 @@ start:
 	- a register for a counter variable
 	- and/or other (temporary) registers as you wish.
 	*/
-	
+
 	//Initialize a Register to hold the state of the LED bar
 	BL	knightRiderLoop
 

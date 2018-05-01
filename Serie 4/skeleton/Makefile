@@ -1,4 +1,4 @@
 blink1: knight-rider.s
-	gcc -o knight-rider knight-rider.s -l wiringPi
+	gcc -o knight-rider knight-rider-cedric.s -l wiringPi
 
 
