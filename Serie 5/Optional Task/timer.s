@@ -49,7 +49,7 @@ configurePins:
 	//Set the sound pin to 'output' mode
 	LDR     R0, .SOUND_PIN
 	LDR     R1, .OUTPUT
-	BL	    pinMode
+	BL	pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
 	LDR	    R0, .BUTTON1_PIN
@@ -75,7 +75,6 @@ start:
     /*
     This extra function initializes some Registers, which we need later. Then jumps to the main Loop
     */
-	
 	//Register for led bar
 	MOV	    R5, #1
 
@@ -108,9 +107,9 @@ setTime:
 	//Check for Button2 to be pressed
 	LDR	    R0, .BUTTON2_PIN
 	MOV	    R1, #200
-	MOV	    R2, R7
+	MOV	    R2, R8
 	BL	    waitForButton
-	MOV	    R7, R1
+	MOV	    R8, R1
 
 	//If pressed, start Timer
 	CMP	R0, #1
@@ -119,65 +118,37 @@ setTime:
 	B	setTime
 	
 startTimer:
-	
+
 	BL	timerRoutine
+	BL	makeAlarm
 	
+makeAlarm:
+	//Show Zero
+	BL	showLedNumber
 
-knightRiderLoop:
-	/*
-	This is the main Loop which lets the LED run, and does the most important
-    thing. The shiftOut subroutine is fot converting seriell data into parallel for the display.
-	To do so
-	1. Set the latch pin to low
-	2. Send the data with shiftOut
-	3. Set the latch pin to high
-	*/
-	
-	//To show the current state of the LED bar, we call a subroutine to display R5
-	BL 	    showLed
+	//Set sound pin HIGH (read serial data)
+	LDR	    R0, .SOUND_PIN
+	LDR	    R1, .HIGH
+	BL	    digitalWrite
 
-	// Detect button presses and increase/decrease the delay
-	// Use the 'waitForButton' subroutine for each button
-	//Check if button pressed Right
+   	//Check for Button1 to be pressed
 	LDR	    R0, .BUTTON1_PIN
-	MOV	    R1, R10
+	MOV	    R1, #200
 	MOV	    R2, R7
 	BL	    waitForButton
 	MOV	    R7, R1
+
+	//If button pressed, then return to start(read serial data)
+	CMP	    R0, #1
+	BLEQ	    returnToStart
 	
+	B 	makeAlarm
 
-	/* Other logic goes here, like updating variables, branching to the loop label, etc. */
-
-
-	/* Let the LED run */
-	//Do a left shift when R9 is 0
-	CMP	    R9, #0
-	LSLEQ	R5, R5, #1
-
-	//Do a right shift when R9 is 1 (R9 = 1 means the LED travels to the right)
-	CMP	    R9, #1
-	LSREQ	R5, R5, #1
-
-	//If the LED is on 128 then we change the direction information in R9 to 1, so the LED now
-    	//travels to the right
-	CMP	    R5, #128
-	MOVEQ	R9, #1
-	SUBEQ	R10,#1				//Decreases the delay by 1 with each direction change
-
-    	//If the LED is on 1 then we change the direction information in R9 to 1, so the LED now
-    	//travels to the left
-	CMP	    R5, #1
-	MOVEQ	R9, #0
-	SUBEQ	R10,#1              //Decreses the delay by 1 with each direction change
-	
-	//End Loop if game finished. When the delay reaches 20 (which is nearly too fast to play), we go to the
-    	//end loop which finishes the game
-	CMP	    R10, #20
-	BEQ	    end
-	
-	
-	//Jump to Loop if the delay is not yet 20
-	B       knightRiderLoop
+returnToStart:
+		LDR	    R0, .SOUND_PIN
+		LDR	    R1, .LOW
+		BL	    digitalWrite
+		B	    start
 
 
 exit:	
@@ -275,27 +246,6 @@ showLed:
 	BL	    digitalWrite
 
 	LDMIA   SP!, {R0-R5, PC}
-
-makeSound:
-    /*This gets called by the rightPaddle subroutine. It just makes a sound */
-	STMDB   SP!, {R0,R1, LR}
-	
-	//Set sound pin HIGH (read serial data)
-	LDR	    R0, .SOUND_PIN
-	LDR	    R1, .HIGH
-	BL	    digitalWrite
-
-    //waits for 10ms
-	MOV	    R0, #10
-	BL	    delay
-
-	// Set sound pin LOW (read serial data)
-	LDR	    R0, .SOUND_PIN
-	LDR	    R1, .LOW
-	BL	    digitalWrite
-
-	
-	LDMIA   SP!, {R0,R1, PC}
 	
 timerRoutine:
 	/*
@@ -307,14 +257,13 @@ timerRoutine:
 
 	STMDB   SP!, {R0,R10,R11,LR}
 	
-	MOV	R11, #0	
+	MOV	R11, #1	
 
 	MOV	R10, #60
 	BL      timerOneMinute
 	
 	timerOneMinute:
 		CMP	R11, #1
-		BLEQ	makeSound
 		MOVEQ	R5, #0
 		BLEQ	showLed
 
@@ -324,9 +273,7 @@ timerRoutine:
 
 		CMP	R11, #1
 		MOVEQ	R11, #0
-
-		CMP	R11, #0
-		MOVEQ	R11, #1
+		MOVNE	R11, #1
 		
 
 		MOV	R0, #1000
@@ -342,7 +289,7 @@ timerRoutine:
 	
 		SUB	R9, #1
 		CMP	R9, #0
-		BGT	timerOneMinute
+		BGT	timerRoutine
 		
 	LDMIA   SP!, {R0,R10,R11,PC}
 
@@ -358,7 +305,7 @@ showLedNumber:
 	STMDB   SP!, {R0,R10, LR}
 	
 	CMP	R9, #0
-	LDREQ	R5, .ONE_MINUTE
+	LDREQ	R5, .ZERO
 	
 	CMP	R9, #1
 	LDREQ	R5, .ONE_MINUTE
@@ -380,9 +327,6 @@ showLedNumber:
 
 	CMP	R9, #7
 	LDREQ	R5, .SEVEN_MINUTE
-
-	CMP	R9, #8
-	LDREQ	R5, .EIGHT_MINUTE
 
 	BL	showLed
 	
@@ -416,11 +360,11 @@ showLedNumber:
 .BUTTON2_PIN:		.word	25
 
 //For LED
-.ONE_MINUTE:		.word	1		
-.TWO_MINUTE:		.word	2
-.THREE_MINUTE:		.word	4
-.FOUR_MINUTE:		.word	8
-.FIVE_MINUTE:		.word	16
-.SIX_MINUTE:		.word	32
-.SEVEN_MINUTE:		.word	64
-.EIGHT_MINUTE:		.word	128
+.ZERO:			.word	1
+.ONE_MINUTE:		.word	2		
+.TWO_MINUTE:		.word	4
+.THREE_MINUTE:		.word	8
+.FOUR_MINUTE:		.word	16
+.FIVE_MINUTE:		.word	32
+.SIX_MINUTE:		.word	64
+.SEVEN_MINUTE:		.word	128
