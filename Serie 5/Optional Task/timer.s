@@ -25,16 +25,16 @@
 main:
 	// This will setup the wiringPi library.
 	// In case something goes wrong, we exit the program
-	BL      wiringPiSetupGpio
-	CMP	    R0, #-1
-	BEQ	    exit
+	BL	wiringPiSetupGpio
+	CMP	R0, #-1
+	BEQ	exit
 
 
 configurePins:
 	// Set the data pin to 'output' mode
-	LDR	    R0, .DATA_PIN
-	LDR	    R1, .OUTPUT
-	BL	    pinMode
+	LDR	R0, .DATA_PIN
+	LDR	R1, .OUTPUT
+	BL	pinMode
 
 	// Set the latch pin to 'output' mode
 	LDR     R0, .LATCH_PIN
@@ -52,64 +52,76 @@ configurePins:
 	BL	pinMode
 
 	// Set the pins of BUTTON 1 and BUTTON 2 to 'input' mode
-	LDR	    R0, .BUTTON1_PIN
-	LDR	    R1, .INPUT
-	BL	    pinMode
+	LDR	R0, .BUTTON1_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
 
-	LDR	    R0, .BUTTON2_PIN
-	LDR	    R1, .INPUT
-	BL	    pinMode
-
-    	//This sets the pull-up or pull-down resistor mode on the BUTTON2_PIN
-	LDR	    R0, .BUTTON1_PIN
-	LDR	    R1, .PUD_UP
-	BL	    pullUpDnControl
+	LDR	R0, .BUTTON2_PIN
+	LDR	R1, .INPUT
+	BL	pinMode
 
     	//This sets the pull-up or pull-down resistor mode on the BUTTON2_PIN
-	LDR	    R0, .BUTTON2_PIN
-	LDR	    R1, .PUD_UP
-	BL	    pullUpDnControl
+	LDR	R0, .BUTTON1_PIN
+	LDR	R1, .PUD_UP
+	BL	pullUpDnControl
+
+    	//This sets the pull-up or pull-down resistor mode on the BUTTON2_PIN
+	LDR	R0, .BUTTON2_PIN
+	LDR	R1, .PUD_UP
+	BL	pullUpDnControl
 
 
 start:
-    /*
-    This extra function initializes some Registers, which we need later. Then jumps to the main Loop
-    */
-	//Register for led bar
-	MOV	    R5, #1
+	/*
+	This is where the Timer program begins. In this function all Registers are set up, which we 
+	will need later. Then it jumps to the setTime function.
+   	*/
+
+	//Register for led bar (1 means the first LED will light up).
+	MOV	R5, #1
 
 	//State of the two buttons (R7 for button 1, R8 for button 2). 0 means it's not yet pressed
-	MOV	    R7,  #0
-	MOV	    R8,  #0
+	MOV	R7,  #0
+	MOV	R8,  #0
 	
 	//Register that holds Timer in minutes
-	MOV	    R9,  #0
+	MOV	R9,  #0
 
-	BL	    setTime
+	BL	setTime
 	
 
 setTime:
+	/*With Button 1 you can set the time in Minutes. Max time is 7 minutes. With Button 2 
+	you can start the timer.
+	*/
     	
+	//First it shows the state of the LED (Initial state is 1)
 	BL	showLedNumber
 	
-	//Check for Button1 to be pressed
-	LDR	    R0, .BUTTON1_PIN
-	MOV	    R1, #200
-	MOV	    R2, R7
-	BL	    waitForButton
-	MOV	    R7, R1
 
-	//If pressed, increase Time
+	//Check for Button1 to be pressed
+	LDR	R0, .BUTTON1_PIN
+	MOV	R1, #200
+	MOV	R2, R7
+	BL	waitForButton
+	MOV	R7, R1
+
+	//If pressed, increase Time by one minute
 	CMP	R0, #1
 	ADDEQ	R9, #1
+
+	//If you set the time beyond 7 minutes it gets decreased to the max time again
+	CMP	R9, #8
+	SUBEQ	R9, #1
 	BL	showLedNumber
 
+
 	//Check for Button2 to be pressed
-	LDR	    R0, .BUTTON2_PIN
-	MOV	    R1, #200
-	MOV	    R2, R8
-	BL	    waitForButton
-	MOV	    R8, R1
+	LDR	R0, .BUTTON2_PIN
+	MOV	R1, #200
+	MOV	R2, R8
+	BL	waitForButton
+	MOV	R8, R1
 
 	//If pressed, start Timer
 	CMP	R0, #1
@@ -118,37 +130,45 @@ setTime:
 	B	setTime
 	
 startTimer:
+	/*Simple function to let the Timer run then afterwards make the alarm noice*/
 
 	BL	timerRoutine
 	BL	makeAlarm
 	
 makeAlarm:
-	//Show Zero
+	/*Let's the Sound Pin make a noice until Button 1 is pressed, then returnToStart is called*/
+
+	//Show Zero (Or in this case let LED 1 be lit)
 	BL	showLedNumber
 
 	//Set sound pin HIGH (read serial data)
-	LDR	    R0, .SOUND_PIN
-	LDR	    R1, .HIGH
-	BL	    digitalWrite
+	LDR	R0, .SOUND_PIN
+	LDR	R1, .HIGH
+	BL	digitalWrite
 
    	//Check for Button1 to be pressed
-	LDR	    R0, .BUTTON1_PIN
-	MOV	    R1, #200
-	MOV	    R2, R7
-	BL	    waitForButton
-	MOV	    R7, R1
+	LDR	R0, .BUTTON1_PIN
+	MOV	R1, #200
+	MOV	R2, R7
+	BL	waitForButton
+	MOV	R7, R1
 
-	//If button pressed, then return to start(read serial data)
-	CMP	    R0, #1
-	BLEQ	    returnToStart
+	//If button pressed, then go to returnToStart to end the alarm
+	CMP	R0, #1
+	BLEQ	returnToStart
 	
 	B 	makeAlarm
 
 returnToStart:
-		LDR	    R0, .SOUND_PIN
-		LDR	    R1, .LOW
-		BL	    digitalWrite
-		B	    start
+	/*This function helps to end the alarm and then goes to the start again for the next
+	Timer
+	*/
+
+	//Sets the Sound Pin to low and then goes to the start again
+	LDR	R0, .SOUND_PIN
+	LDR	R1, .LOW
+	BL	digitalWrite
+	B	start
 
 
 exit:	
@@ -187,63 +207,64 @@ waitForButton:
 	*/
 	STMDB   SP!, {R2-R10, LR}
 
-	MOV	    R5, R0 		// R5: buttonPin
-	MOV	    R6, R1		// R6: timeout
-	MOV	    R9, R2		// R9: (previous) button state
-	MOV	    R10, #0		// R10: button pressed or not
+	MOV	R5, R0 		// R5: buttonPin
+	MOV	R6, R1		// R6: timeout
+	MOV	R9, R2		// R9: (previous) button state
+	MOV	R10, #0		// R10: button pressed or not
 
 	@ get start time
-	BL	    millis
-	MOV	    R7, R0 		// R7: start time
+	BL	millis
+	MOV	R7, R0 		// R7: start time
 
 	waitingLoopForButton:
 
 		// read button pin state
-		MOV	    R0, R5
-		BL	    digitalRead
+		MOV	R0, R5
+		BL	digitalRead
 
 		// Check if edge is falling (1 -> 0)
-		SUB	    R1, R9, R0
-		MOV	    R9, R0			// previous = current
-		CMP	    R1, #1
+		SUB	R1, R9, R0
+		MOV	R9, R0			// previous = current
+		CMP	R1, #1
 		MOVEQ	R10, #1
 
 		// compute elapsed time
-		BL	    millis
-		SUB	    R0, R0, R7
+		BL	millis
+		SUB	R0, R0, R7
 
 		// check if elapsed time < time out
-		CMP	    R0, R6
-		BMI	    waitingLoopForButton
-		B	    returnButtonPress
+		CMP	R0, R6
+		BMI	waitingLoopForButton
+		B	returnButtonPress
 
 	returnButtonPress:
-	MOV	    R0, R10				// return 1 if button pressed within time window
-	MOV	    R1, R9
+	MOV	R0, R10				// return 1 if button pressed within time window
+	MOV	R1, R9
 	LDMIA   SP!, {R2-R10, PC}
 
 
 showLed:
-    /*This is the main logic to run the LED. It utilizes the shiftOut subroutine to
-     show the state of the LED on the display */
+	/*This is the main logic to run the LED. It utilizes the shiftOut subroutine to
+     	show the state of the LED on the display */
+
 	STMDB   SP!, {R0-R5, LR}
 	
 	// Set latch pin low (read serial data)
-	LDR	    R0, .LATCH_PIN
-	LDR	    R1, .LOW
-	BL	    digitalWrite
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .LOW
+	BL	digitalWrite
 
 	// Send serial data (shiftOut)
-	LDR	    R0, .DATA_PIN
-	LDR	    R1, .CLOCK_PIN
-	LDR	    R2, .LSBFIRST
-	MOV	    R3, R5
-	BL	    shiftOut
+	LDR	R0, .DATA_PIN
+	LDR	R1, .CLOCK_PIN
+	LDR	R2, .LSBFIRST
+	MOV	R3, R5
+	BL	shiftOut
 
 	// Set latch pin high (write serial data to parallel output)
-	LDR	    R0, .LATCH_PIN
-	LDR	    R1, .HIGH
-	BL	    digitalWrite
+	LDR	R0, .LATCH_PIN
+	LDR	R1, .HIGH
+	BL	digitalWrite
 
 	LDMIA   SP!, {R0-R5, PC}
 	
@@ -257,36 +278,45 @@ timerRoutine:
 
 	STMDB   SP!, {R0,R10,R11,LR}
 	
+	//Register 11 lets the LED blink (1 means we show the current
+	//state of the LED, 0 means we show nothing)
 	MOV	R11, #1	
 
+	//Register 10 is there to define 1 minute
 	MOV	R10, #60
+
 	BL      timerOneMinute
 	
 	timerOneMinute:
+		//Let the normal state be shown
 		CMP	R11, #1
 		MOVEQ	R5, #0
 		BLEQ	showLed
 
+		//Nothing is shown(means it blins every 2 seconds)
 		CMP	R11, #0
 		BLEQ	showLedNumber
 
-
+		//Changes R11, so the LED will blink every 2 seconds
 		CMP	R11, #1
 		MOVEQ	R11, #0
 		MOVNE	R11, #1
 		
-
+		//one second delay(for one minute the loop will be executed
+		//60 times
 		MOV	R0, #1000
 		BL      delay
 
-
+		//If the loop was executed 60 times it jumps to the checkEnd
+		//function which will check how many minutes the timer
+		//should still go
 		SUB	R10, #1
 		CMP     R10, #0
 		BGT	timerOneMinute
 		BL	checkEnd
 
 	checkEnd:
-	
+		//Checks how many times the timerOneMinute will be executed
 		SUB	R9, #1
 		CMP	R9, #0
 		BGT	timerRoutine
